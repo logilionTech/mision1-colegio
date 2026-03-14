@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados del Examen | AI Exam System PRO</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body class="auth-bg">
+    <div class="auth-container" style="max-width: 600px;">
+        <div class="auth-card" style="text-align: center;">
+            <div class="auth-logo mb-4">
+                <i class="ph ph-check-circle text-success" style="font-size: 3rem;"></i>
+            </div>
+            <h2>¡Examen Finalizado!</h2>
+            <p class="auth-subtitle">Aquí tienes el resumen de tu evaluación.</p>
+            
+            <h3 id="studentNameDisplay" style="color: var(--c-primary); margin-top: 1rem; font-size: 1.5rem;">Cargando Estudiante...</h3>
+
+            <div class="results-box mt-4" style="background: #F9FAFB; padding: 2rem; border-radius: var(--radius-md); border: 1px solid var(--c-border); margin-bottom: 2rem;">
+                <div style="font-size: 4rem; font-weight: 800; color: var(--c-primary);" id="scoreDisplay">--%</div>
+                <h3 id="statusDisplay" style="margin-top: 0.5rem;">Calculando...</h3>
+                
+                <div class="stats-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.5rem; text-align: left;">
+                    <div style="padding: 1rem; background: #ECFDF5; border-radius: var(--radius-sm);">
+                        <span style="color: var(--c-success); font-weight: 600;"><i class="ph ph-check"></i> Correctas</span>
+                        <div id="correctDisplay" style="font-size: 1.25rem; font-weight: 700;">-</div>
+                    </div>
+                    <div style="padding: 1rem; background: #FEF2F2; border-radius: var(--radius-sm);">
+                        <span style="color: var(--c-danger); font-weight: 600;"><i class="ph ph-x"></i> Incorrectas</span>
+                        <div id="incorrectDisplay" style="font-size: 1.25rem; font-weight: 700;">-</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Resumen detallado de respuestas -->
+            <div id="detailedResults" style="margin-bottom: 2rem; text-align: left; background: white; padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--c-border); max-height: 400px; overflow-y: auto;">
+                <h4 style="margin-bottom: 1rem; color: var(--c-text); border-bottom: 1px solid var(--c-border); padding-bottom: 0.5rem;"><i class="ph ph-list-numbers"></i> Revisión de Respuestas</h4>
+                <div id="questionsReviewContainer"></div>
+            </div>
+            
+            <button id="btnDownloadCert" class="btn btn-primary btn-block hidden" style="margin-bottom: 1rem;">
+                <i class="ph ph-certificate"></i> Descargar Certificado PDF
+            </button>
+            
+            <a href="login.html" id="btnLogout" class="btn btn-outline btn-block" style="color: var(--c-danger); border-color: var(--c-danger);">
+                <i class="ph ph-sign-out"></i> Cerrar Sesión
+            </a>
+        </div>
+    </div>
+    
+    <script type="module" src="js/certificate.js"></script>
+</body>
+</html>

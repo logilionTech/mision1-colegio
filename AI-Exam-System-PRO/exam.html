@@ -1,1 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluación en Progreso | AI Exam System PRO</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/exam.css">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body class="exam-body" oncontextmenu="return false;" oncopy="return false;" oncut="return false;" onpaste="return false;">
+    
+    <!-- Bloqueo de teclado anti-fraude en script -->
+    
+    <header class="exam-header">
+        <div class="header-left">
+            <i class="ph ph-shield-check text-success"></i>
+            <span class="exam-title" id="displayExamTitle">Cargando evaluación...</span>
+        </div>
+        <div class="header-right">
+            <div class="user-info">
+                <i class="ph ph-user"></i>
+                <span id="displayUserName">Estudiante</span>
+            </div>
+            <div class="timer-container" id="timerContainer">
+                <i class="ph ph-timer"></i>
+                <span id="timeRemaining">--:--</span>
+            </div>
+        </div>
+    </header>
 
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+    </div>
+
+    <main class="exam-main">
+        <div class="exam-container">
+            <div id="loader" class="text-center" style="padding: 3rem;">
+                <i class="ph ph-spinner ph-spin" style="font-size: 3rem; color: var(--c-primary);"></i>
+                <p class="mt-2">Preparando tus preguntas...</p>
+            </div>
+            
+            <form id="examForm" class="hidden">
+                <div id="questionsContainer">
+                    <!-- Las preguntas se generarán aquí mediante JS -->
+                </div>
+                
+                <div class="exam-actions">
+                    <button type="button" class="btn btn-outline" id="btnPrev" disabled><i class="ph ph-caret-left"></i> Anterior</button>
+                    <span class="step-indicator">Pregunta <span id="currentQ">1</span> de <span id="totalQ">X</span></span>
+                    <button type="button" class="btn btn-primary" id="btnNext">Siguiente <i class="ph ph-caret-right"></i></button>
+                    <button type="submit" class="btn btn-success hidden" id="btnSubmit">Finalizar Examen <i class="ph ph-check-circle"></i></button>
+                </div>
+            </form>
+            
+            <div id="submissionOverlay" class="submission-overlay hidden">
+                <div class="submission-card">
+                    <i class="ph ph-paper-plane-tilt text-success" style="font-size: 4rem;"></i>
+                    <h2>Enviando respuestas...</h2>
+                    <p>Calculando calificación y generando certificado.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Modal Anti Fraude -->
+    <div id="fraudModal" class="modal-overlay hidden">
+        <div class="modal-card border-danger">
+            <i class="ph ph-warning-circle text-danger" style="font-size: 3rem;"></i>
+            <h3>¡Alerta de Seguridad!</h3>
+            <p>El uso del portapapeles, atajos de teclado y clic derecho está estrictamente prohibido durante la evaluación.</p>
+            <p class="text-muted text-sm mt-3">Este incidente ha sido registrado.</p>
+            <button class="btn btn-primary mt-4" id="btnDismissFraud">Entendido</button>
+        </div>
+    </div>
+
+    <script type="module" src="js/exam.js"></script>
+</body>
+</html>
