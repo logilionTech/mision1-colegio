@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banco de Preguntas | AI Exam Admin</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/admin.css">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body class="admin-layout">
+
+    <aside class="admin-sidebar">
+        <div class="admin-brand">
+            <i class="ph ph-shield-check text-success"></i>
+            <span>Admin PRO</span>
+        </div>
+        <nav class="admin-nav">
+            <a href="dashboard.html" class="admin-nav-item"><i class="ph ph-squares-four"></i> Dashboard</a>
+            <a href="exams.html" class="admin-nav-item"><i class="ph ph-exam"></i> Exámenes</a>
+            <a href="questionbank.html" class="admin-nav-item active"><i class="ph ph-database"></i> Banco de Preguntas</a>
+            <a href="statistics.html" class="admin-nav-item"><i class="ph ph-chart-bar"></i> Estadísticas & Exportar</a>
+        </nav>
+        <div class="admin-nav" style="margin-top: auto;">
+            <a href="../login.html" class="admin-nav-item"><i class="ph ph-sign-out"></i> Cerrar Sesión</a>
+        </div>
+    </aside>
+
+    <main class="admin-main">
+        <header class="admin-header">
+            <h2>Módulo de Banco de Preguntas</h2>
+            <div class="user-info">
+                <span>Administrador</span>
+                <i class="ph ph-user-circle" style="font-size: 1.5rem;"></i>
+            </div>
+        </header>
+
+        <div class="admin-content">
+            
+            <!-- FORMULARIO CREAR PREGUNTA (ACORDE AL REGLAMENTO DEFINIDO) -->
+            <div class="admin-card">
+                <h3><i class="ph ph-file-plus"></i> Añadir Pregunta al Banco Madre</h3>
+                <p class="text-muted mt-2 mb-4">Alimenta el banco de datos. Los exámenes luego tomarán una muestra aleatoria de aquí.</p>
+                
+                <form id="addQuestionForm" class="custom-form" style="max-width: 800px; background: #F9FAFB; padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--c-border);">
+                    <div class="form-group mb-3">
+                        <label for="qText"><strong>Enunciado de la Pregunta</strong></label>
+                        <textarea id="qText" rows="3" placeholder="Redacte la pregunta clara y precisa..." required style="width: 100%; padding: 0.75rem; border: 1px solid var(--c-border); border-radius: var(--radius-md);"></textarea>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                        <div class="form-group">
+                            <label for="qType"><strong>Tipo de Pregunta</strong></label>
+                            <select id="qType" required style="width: 100%; padding: 0.75rem; border: 1px solid var(--c-border); border-radius: var(--radius-md); background: white;">
+                                <option value="multiple">Selección Múltiple (Única Respuesta)</option>
+                                <option value="boolean">Falso o Verdadero</option>
+                                <option value="open">Respuesta Abierta</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="qCategory"><strong>Categoría / Etiqueta</strong></label>
+                            <input type="text" id="qCategory" placeholder="Ej. Ciencias Naturales, Matemáticas Básicas..." required style="width: 100%; padding: 0.75rem; border: 1px solid var(--c-border); border-radius: var(--radius-md);">
+                        </div>
+                    </div>
+
+                    <!-- Constructor Dinámico basado en el Tipo de Pregunta -->
+                    <div id="dynamicAnswersArea" style="background: white; padding: 1rem; border-radius: var(--radius-md); border: 1px dashed var(--c-border); margin-bottom: 1rem;">
+                        <h4 style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--c-text-muted);">Constructor de Selección Múltiple</h4>
+                        
+                        <!-- Opción 1 (Por defecto Correcta) -->
+                        <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem;">
+                            <input type="radio" name="correctOpt" checked>
+                            <input type="text" placeholder="Escribe aquí la respuesta VERDADERA/CORRECTA..." required style="flex:1; padding: 0.5rem; border: 1px solid var(--c-success); border-radius: var(--radius-sm); border-left: 4px solid var(--c-success);">
+                        </div>
+                        
+                        <!-- Opciones Falsas (Distractores) -->
+                        <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem;">
+                            <input type="radio" name="correctOpt">
+                            <input type="text" placeholder="Distractor o respuesta incorrecta 1" style="flex:1; padding: 0.5rem; border: 1px solid var(--c-border); border-radius: var(--radius-sm);">
+                        </div>
+                        <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem;">
+                            <input type="radio" name="correctOpt">
+                            <input type="text" placeholder="Distractor o respuesta incorrecta 2" style="flex:1; padding: 0.5rem; border: 1px solid var(--c-border); border-radius: var(--radius-sm);">
+                        </div>
+                        <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem;">
+                            <input type="radio" name="correctOpt">
+                            <input type="text" placeholder="Distractor o respuesta incorrecta 3" style="flex:1; padding: 0.5rem; border: 1px solid var(--c-border); border-radius: var(--radius-sm);">
+                        </div>
+                        
+                        <p style="font-size: 0.75rem; color: var(--c-text-muted); margin-top: 0.5rem;">Al presentar el examen, el sistema desordenará estas 4 opciones aleatoriamente automáticamente.</p>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary"><i class="ph ph-bookmark-simple"></i> Guardar Pregunta en el Banco</button>
+                    
+                </form>
+            </div>
+            
+            <!-- TARJETA: EXPLORADOR DEL BANCO -->
+            <div class="admin-card">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h3 id="bankCounter">Banco Madre de Preguntas (3 Guardadas)</h3>
+                    <div>
+                        <input type="text" placeholder="Buscar por categoría o palabra..." style="padding: 0.5rem; border: 1px solid var(--c-border); border-radius: var(--radius-md);">
+                    </div>
+                </div>
+                
+                <div class="admin-table-wrapper mt-4">
+                    <table class="admin-table" id="questionsTable">
+                        <thead>
+                            <tr>
+                                <th>#ID</th>
+                                <th style="width: 40%">Enunciado</th>
+                                <th>Tipo</th>
+                                <th>Categoría</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span style="color: var(--c-text-muted);">Q-001</span></td>
+                                <td><strong>¿Cuál es el valor fundamental del Colegio San Paulo?</strong></td>
+                                <td>Opción Múltiple</td>
+                                <td><span style="background:#E0E7FF; color:var(--c-primary); padding: 2px 8px; border-radius: 4px; font-size: 12px;">Desarrollo Integral</span></td>
+                                <td>
+                                    <button class="btn btn-outline" style="padding: 0.25rem 0.5rem;"><i class="ph ph-pencil"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span style="color: var(--c-text-muted);">Q-002</span></td>
+                                <td><strong>¿El Colegio San Paulo incluye pensamiento computacional en su malla curricular?</strong></td>
+                                <td>Falso/Verdadero</td>
+                                <td><span style="background:#E0E7FF; color:var(--c-primary); padding: 2px 8px; border-radius: 4px; font-size: 12px;">Academia</span></td>
+                                <td>
+                                    <button class="btn btn-outline" style="padding: 0.25rem 0.5rem;"><i class="ph ph-pencil"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span style="color: var(--c-text-muted);">Q-003</span></td>
+                                <td><strong>Seleccione uno de los pilares de la institución:</strong></td>
+                                <td>Opción Múltiple</td>
+                                <td><span style="background:#E0E7FF; color:var(--c-primary); padding: 2px 8px; border-radius: 4px; font-size: 12px;">Identidad</span></td>
+                                <td>
+                                    <button class="btn btn-outline" style="padding: 0.25rem 0.5rem;"><i class="ph ph-pencil"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </main>
+    
+    <!-- Lógica rápida para alternar el constructor y guardar -->
+    <script>
+        // Sistema de notificaciones moderno (Toast)
+        function showToast(message, type = 'success') {
+            const toastContainer = document.getElementById('toast-container') || (function() {
+                const el = document.createElement('div');
+                el.id = 'toast-container';
+                el.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;';
+                document.body.appendChild(el);
+                return el;
+            })();
+
+            const toast = document.createElement('div');
+            const bgClass = type === 'success' ? '#10B981' : (type === 'error' ? '#EF4444' : '#3B82F6');
+            toast.style.cssText = `
+                background-color: ${bgClass};
+                color: white;
+                padding: 12px 24px;
+                border-radius: 8px;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                font-size: 14px;
+                font-weight: 500;
+                transform: translateX(120%);
+                transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            `;
+            
+            toast.innerHTML = type === 'success' ? '<i class="ph ph-check-circle" style="font-size: 18px;"></i> ' + message : 
+                              (type === 'error' ? '<i class="ph ph-warning-circle" style="font-size: 18px;"></i> ' + message : message);
+            
+            toastContainer.appendChild(toast);
+            
+            // Trigger animation in
+            setTimeout(() => toast.style.transform = 'translateX(0)', 10);
+            
+            // Trigger animation out
+            setTimeout(() => {
+                toast.style.transform = 'translateX(120%)';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // ============================================
+            // DYNAMIC CONSTRUCTOR LOGIC
+            // ============================================
+            const qTypeSelect = document.getElementById('qType');
+            const area = document.getElementById('dynamicAnswersArea');
+            
+            qTypeSelect.addEventListener('change', function(e) {
+                if(e.target.value === 'boolean') {
+                    area.innerHTML = '<h4 style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--c-text-muted);">Constructor de Falso/Verdadero</h4><div style="display: flex; gap: 1rem;"><label><input type="radio" name="boolOpt" checked value="Verdadero"> La respuesta correcta es <strong>Verdadero</strong></label><label><input type="radio" name="boolOpt" value="Falso"> La respuesta correcta es <strong>Falso</strong></label></div>';
+                } else if(e.target.value === 'open') {
+                    area.innerHTML = '<h4 style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--c-text-muted);">Respuesta Abierta Corta</h4><p style="font-size: 0.85rem; margin-bottom: 1rem;">Para auto-calificarse, el estudiante debe escribir una respuesta similar (no importa mayúsculas/minúsculas). Añade la respuesta esperada:</p><input type="text" id="openAnswerExact" placeholder="Ej. Tarjeta Madre, Paris, 1945..." required style="width: 100%; padding: 0.75rem; border: 1px solid var(--c-success); border-radius: var(--radius-sm); border-left: 4px solid var(--c-success);">';
+                } else {
+                    area.innerHTML = '<h4 style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--c-text-muted);">Constructor de Selección Múltiple</h4><div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem;"><input type="radio" name="correctOpt" checked><input type="text" placeholder="Escribe aquí la respuesta VERDADERA/CORRECTA..." required style="flex:1; padding: 0.5rem; border: 1px solid var(--c-success); border-radius: var(--radius-sm); border-left: 4px solid var(--c-success);"></div><div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem;"><input type="radio" name="correctOpt"><input type="text" placeholder="Distractor o respuesta incorrecta 1" style="flex:1; padding: 0.5rem; border: 1px solid var(--c-border); border-radius: var(--radius-sm);"></div><div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem;"><input type="radio" name="correctOpt"><input type="text" placeholder="Distractor o respuesta incorrecta 2" style="flex:1; padding: 0.5rem; border: 1px solid var(--c-border); border-radius: var(--radius-sm);"></div><div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem;"><input type="radio" name="correctOpt"><input type="text" placeholder="Distractor o respuesta incorrecta 3" style="flex:1; padding: 0.5rem; border: 1px solid var(--c-border); border-radius: var(--radius-sm);"></div>';
+                }
+            });
+
+            // ============================================
+            // SAVE QUESTION LOGIC
+            // ============================================
+            const addQuestionForm = document.getElementById('addQuestionForm');
+            const tbody = document.querySelector('#questionsTable tbody');
+            const bankCounter = document.getElementById('bankCounter');
+            const btnSubmit = document.querySelector('#addQuestionForm button[type="submit"]');
+            window.editingIndex = null;
+            
+            let localQuestions = JSON.parse(localStorage.getItem('admin_questions') || '[]');
+            
+            if (!localStorage.getItem('admin_questions_initialized')) {
+                // Initialize con la data mock
+                localQuestions = [
+                    { id: 'Q-001', text: '¿Cuál es el valor fundamental del Colegio San Paulo?', type: 'Opción Múltiple', category: 'Desarrollo Integral', options: ['Excelencia académica', 'Innovación Tecnológica', 'Valores Cristianos y Desarrollo Integral', 'Deportes competitivos'], correctIndex: 2 },
+                    { id: 'Q-002', text: '¿El Colegio San Paulo incluye pensamiento computacional en su malla curricular?', type: 'Falso/Verdadero', category: 'Academia', options: ['Verdadero', 'Falso'], correctIndex: 0 },
+                    { id: 'Q-003', text: 'Seleccione uno de los pilares de la institución:', type: 'Opción Múltiple', category: 'Identidad', options: ['Individualismo', 'Proyección a la comunidad', 'Competitividad agresiva', 'Nuevas religiones'], correctIndex: 1 }
+                ];
+                localStorage.setItem('admin_questions_initialized', 'true');
+                localStorage.setItem('admin_questions', JSON.stringify(localQuestions));
+            }
+
+            function renderQuestions() {
+                tbody.innerHTML = '';
+                localQuestions = JSON.parse(localStorage.getItem('admin_questions') || '[]');
+                bankCounter.textContent = `Banco Madre de Preguntas (${localQuestions.length} Guardadas)`;
+                
+                localQuestions.forEach((q, index) => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><span style="color: var(--c-text-muted);">${q.id}</span></td>
+                            <td><strong>${q.text}</strong></td>
+                            <td>${q.type}</td>
+                            <td><span style="background:#E0E7FF; color:var(--c-primary); padding: 2px 8px; border-radius: 4px; font-size: 12px;">${q.category}</span></td>
+                            <td>
+                                <button type="button" class="btn btn-outline" onclick="editQuestion(${index})" style="padding: 0.25rem 0.5rem;"><i class="ph ph-pencil"></i></button>
+                                <button type="button" class="btn btn-outline" onclick="deleteQuestion(${index})" style="padding: 0.25rem 0.5rem; color: var(--c-danger); border-color: var(--c-danger);"><i class="ph ph-trash"></i></button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
+
+            window.deleteQuestion = function(index) {
+                if(confirm('¿Deseas eliminar esta pregunta del banco?')) {
+                    if (window.editingIndex === index) {
+                        showToast('No puedes eliminar una pregunta que estás editando actualmente.', 'error');
+                        return;
+                    }
+                    localQuestions.splice(index, 1);
+                    localStorage.setItem('admin_questions', JSON.stringify(localQuestions));
+                    renderQuestions();
+                }
+            }
+
+            window.editQuestion = function(index) {
+                const q = localQuestions[index];
+                document.getElementById('qText').value = q.text;
+                document.getElementById('qCategory').value = q.category;
+                
+                const qTypeSelect = document.getElementById('qType');
+                if(q.type === 'Falso/Verdadero') qTypeSelect.value = 'boolean';
+                else if(q.type === 'Respuesta Abierta') qTypeSelect.value = 'open';
+                else qTypeSelect.value = 'multiple';
+                
+                // Dispara el evento change para que la interfaz se acople al tipo de pregunta
+                qTypeSelect.dispatchEvent(new Event('change'));
+                
+                // Rellenar las opciones suavemente
+                setTimeout(() => {
+                    if (qTypeSelect.value === 'multiple' && q.options) {
+                        const txtInputs = area.querySelectorAll('input[type="text"]');
+                        const radioInputs = area.querySelectorAll('input[type="radio"]');
+                        q.options.forEach((opt, i) => {
+                            if(txtInputs[i]) txtInputs[i].value = opt;
+                            if(radioInputs[i]) radioInputs[i].checked = (i === q.correctIndex);
+                        });
+                    } else if (qTypeSelect.value === 'boolean') {
+                        const radioInputs = document.getElementsByName('boolOpt');
+                        if (q.correctIndex === 1) radioInputs[1].checked = true;
+                        else radioInputs[0].checked = true;
+                    } else if (qTypeSelect.value === 'open' && q.options) {
+                        const openAns = document.getElementById('openAnswerExact');
+                        if(openAns) openAns.value = q.options[0] || '';
+                    }
+                }, 10);
+                
+                window.editingIndex = index;
+                btnSubmit.innerHTML = '<i class="ph ph-check"></i> Actualizar Pregunta';
+                btnSubmit.classList.add('btn-success');
+                btnSubmit.classList.remove('btn-primary');
+                
+                // Mueve la pantalla suavemente hacia el formulario
+                addQuestionForm.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            renderQuestions();
+
+            addQuestionForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const qText = document.getElementById('qText').value;
+                const qTypeRaw = document.getElementById('qType').value;
+                const category = document.getElementById('qCategory').value;
+                
+                let qType = 'Opción Múltiple';
+                let optionsData = [];
+                let correctOptIndex = 0;
+
+                if(qTypeRaw === 'boolean') {
+                    qType = 'Falso/Verdadero';
+                    optionsData = ['Verdadero', 'Falso'];
+                    const radios = document.getElementsByName('boolOpt');
+                    if(radios[1] && radios[1].checked) correctOptIndex = 1;
+                } else if(qTypeRaw === 'open') {
+                    qType = 'Respuesta Abierta';
+                    const openInput = document.getElementById('openAnswerExact');
+                    optionsData = [openInput ? openInput.value.trim() : ''];
+                    correctOptIndex = 0;
+                } else {
+                    const txtInputs = area.querySelectorAll('input[type="text"]');
+                    const radioInputs = area.querySelectorAll('input[type="radio"]');
+                    
+                    txtInputs.forEach((input, index) => {
+                        optionsData.push(input.value || ('Opción ' + (index+1)));
+                        if (radioInputs[index] && radioInputs[index].checked) {
+                            correctOptIndex = index;
+                        }
+                    });
+                }
+
+                if (window.editingIndex !== null) {
+                    // Modo edición
+                    localQuestions[window.editingIndex].text = qText;
+                    localQuestions[window.editingIndex].type = qType;
+                    localQuestions[window.editingIndex].category = category;
+                    localQuestions[window.editingIndex].options = optionsData;
+                    localQuestions[window.editingIndex].correctIndex = correctOptIndex;
+                    
+                    window.editingIndex = null;
+                    btnSubmit.innerHTML = '<i class="ph ph-bookmark-simple"></i> Guardar Pregunta en el Banco';
+                    btnSubmit.classList.remove('btn-success');
+                    btnSubmit.classList.add('btn-primary');
+                    showToast('Pregunta actualizada exitosamente.', 'success');
+                } else {
+                    // Modo creación
+                    const newQ = {
+                        id: 'Q-' + String(localQuestions.length + 1).padStart(3, '0'),
+                        text: qText,
+                        type: qType,
+                        category: category,
+                        options: optionsData,
+                        correctIndex: correctOptIndex
+                    };
+                    localQuestions.push(newQ);
+                    showToast('Pregunta agregada exitosamente al Banco Madre.', 'success');
+                }
+
+                localStorage.setItem('admin_questions', JSON.stringify(localQuestions));
+                
+                addQuestionForm.reset();
+                document.getElementById('qType').value = 'multiple';
+                document.getElementById('qType').dispatchEvent(new Event('change'));
+                renderQuestions();
+            });
+        });
+    </script>
+</body>
+</html>

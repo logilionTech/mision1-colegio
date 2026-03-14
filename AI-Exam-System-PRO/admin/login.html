@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administración | AI Exam System PRO</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        .auth-logo { background: #fee2e2; color: #dc2626; }
+        .btn-primary { background-color: #111827; }
+        .btn-primary:hover { background-color: #000000; box-shadow: 0 4px 12px rgba(0,0,0, 0.2); }
+    </style>
+</head>
+<body class="auth-bg">
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-logo">
+                <i class="ph ph-shield-check"></i>
+                <span>Admin PRO</span>
+            </div>
+            <h2>Acceso Administrador</h2>
+            <p class="auth-subtitle">Panel de control de evaluaciones</p>
+            
+            <form id="adminLoginForm" class="auth-form">
+                <div class="form-group">
+                    <label for="admin-email">Correo Administrativo</label>
+                    <div class="input-with-icon">
+                        <i class="ph ph-user-circle"></i>
+                        <input type="email" id="admin-email" required placeholder="admin@escuela.edu">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="admin-password">Código de Acceso / Contraseña</label>
+                    <div class="input-with-icon">
+                        <i class="ph ph-key"></i>
+                        <input type="password" id="admin-password" required placeholder="••••••••">
+                        <button type="button" class="toggle-password"><i class="ph ph-eye"></i></button>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-block">
+                    Acceder al Panel <i class="ph ph-sign-in"></i>
+                </button>
+                
+                <div id="authMessage" class="auth-message"></div>
+            </form>
+            
+            <div class="auth-footer">
+                <p><a href="../login.html" class="admin-link"><i class="ph ph-arrow-left"></i> Volver al Login de Estudiantes</a></p>
+            </div>
+        </div>
+    </div>
+    
+    <script type="module" src="../js/auth.js"></script>
+</body>
+</html>

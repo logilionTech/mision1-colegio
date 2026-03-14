@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | AI Exam Admin</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/admin.css">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body class="admin-layout">
+
+    <aside class="admin-sidebar">
+        <div class="admin-brand">
+            <i class="ph ph-shield-check text-success"></i>
+            <span>Admin PRO</span>
+        </div>
+        <nav class="admin-nav">
+            <a href="dashboard.html" class="admin-nav-item active"><i class="ph ph-squares-four"></i> Dashboard</a>
+            <a href="exams.html" class="admin-nav-item"><i class="ph ph-exam"></i> Exámenes</a>
+            <a href="questionbank.html" class="admin-nav-item"><i class="ph ph-database"></i> Banco de Preguntas</a>
+            <a href="statistics.html" class="admin-nav-item"><i class="ph ph-chart-bar"></i> Estadísticas & Exportar</a>
+        </nav>
+        <div class="admin-nav" style="margin-top: auto;">
+            <a href="../login.html" class="admin-nav-item"><i class="ph ph-sign-out"></i> Cerrar Sesión</a>
+        </div>
+    </aside>
+
+    <main class="admin-main">
+        <header class="admin-header">
+            <h2>Panel Principal de Control</h2>
+            <div class="user-info">
+                <span>Administrador</span>
+                <i class="ph ph-user-circle" style="font-size: 1.5rem;"></i>
+            </div>
+        </header>
+
+        <div class="admin-content">
+            <div class="admin-card text-center" style="padding: 4rem 2rem;">
+                <i class="ph ph-student text-success" style="font-size: 4rem; margin-bottom: 1rem;"></i>
+                <h2>Bienvenido al AI Exam System PRO</h2>
+                <p class="text-muted mt-2">Plataforma integral de gestión de exámenes automatizados del Colegio San Paulo.</p>
+                
+                <div class="mt-4" style="display: flex; gap: 1rem; justify-content: center;">
+                    <a href="questionbank.html" class="btn btn-primary"><i class="ph ph-plus"></i> Crear Pregunta</a>
+                    <a href="statistics.html" class="btn btn-outline" style="border-color: var(--c-success); color: var(--c-success);"><i class="ph ph-chart-line-up"></i> Ver Rendimiento</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>

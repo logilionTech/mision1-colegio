@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Exámenes | AI Exam Admin</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/admin.css">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body class="admin-layout">
+
+    <aside class="admin-sidebar">
+        <div class="admin-brand">
+            <i class="ph ph-shield-check text-success"></i>
+            <span>Admin PRO</span>
+        </div>
+        <nav class="admin-nav">
+            <a href="dashboard.html" class="admin-nav-item"><i class="ph ph-squares-four"></i> Dashboard</a>
+            <a href="exams.html" class="admin-nav-item active"><i class="ph ph-exam"></i> Exámenes</a>
+            <a href="questionbank.html" class="admin-nav-item"><i class="ph ph-database"></i> Banco de Preguntas</a>
+            <a href="statistics.html" class="admin-nav-item"><i class="ph ph-chart-bar"></i> Estadísticas & Exportar</a>
+        </nav>
+        <div class="admin-nav" style="margin-top: auto;">
+            <a href="../login.html" class="admin-nav-item"><i class="ph ph-sign-out"></i> Cerrar Sesión</a>
+        </div>
+    </aside>
+
+    <main class="admin-main">
+        <header class="admin-header">
+            <h2>Generador y Gestor de Exámenes</h2>
+            <div class="user-info">
+                <span>Administrador</span>
+                <i class="ph ph-user-circle" style="font-size: 1.5rem;"></i>
+            </div>
+        </header>
+
+        <div class="admin-content">
+            
+            <!-- TARJETA: CREAR NUEVO EXAMEN -->
+            <div class="admin-card">
+                <h3><i class="ph ph-plus-circle"></i> Nuevo Examen Automatizado</h3>
+                <p class="text-muted mt-2 mb-4">El sistema tomará la cantidad de preguntas solicitadas de manera aleatoria desde tu Banco de Preguntas general, construyendo versiones unicas para cada estudiante.</p>
+                
+                <form id="createExamForm" class="custom-form" style="max-width: 800px;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="examTitle">Título del Examen / Materia</label>
+                            <input type="text" id="examTitle" placeholder="Ej. Evaluación Mensual de Ciencias" required style="width: 100%; padding: 0.75rem; border: 1px solid var(--c-border); border-radius: var(--radius-md);">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="examCategory">Categoría a Evaluar</label>
+                            <select id="examCategory" required style="width: 100%; padding: 0.75rem; border: 1px solid var(--c-border); border-radius: var(--radius-md); background: white;">
+                                <option value="">Seleccione Categoría...</option>
+                                <option value="general">Cultura General</option>
+                                <option value="ciencias">Ciencias</option>
+                                <option value="matematicas">Matemáticas</option>
+                                <option value="tecnologia">Tecnología e Informática</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+                        <div class="form-group">
+                            <label for="totalQuestionsReq">Cantidad de Preguntas</label>
+                            <input type="number" id="totalQuestionsReq" min="1" max="100" value="10" required style="width: 100%; padding: 0.75rem; border: 1px solid var(--c-border); border-radius: var(--radius-md);">
+                            <span style="font-size: 0.8rem; color: var(--c-text-muted);">El sistema las elegirá aleatoriamente.</span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="examTimerReq">Temporizador (Minutos)</label>
+                            <input type="number" id="examTimerReq" min="5" max="180" value="60" required style="width: 100%; padding: 0.75rem; border: 1px solid var(--c-border); border-radius: var(--radius-md);">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" style="margin-top: 1rem;">
+                        <button type="submit" class="btn btn-primary">Guardar y Activar Examen</button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- TARJETA: LISTA DE EXAMENES ACTIVOS -->
+            <div class="admin-card">
+                <h3>Exámenes Programados y Activos</h3>
+                
+                <div class="admin-table-wrapper mt-4">
+                    <table class="admin-table" id="examsTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Título</th>
+                                <th>Categoría</th>
+                                <th>Preguntas</th>
+                                <th>Duración</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>#EX-001</td>
+                                <td><strong>Evaluación General Institucional</strong></td>
+                                <td>General</td>
+                                <td>3 aleatorias</td>
+                                <td>30 min</td>
+                                <td><span style="background:var(--c-success); color:white; padding: 2px 8px; border-radius: 12px; font-size: 12px;">Activo</span></td>
+                                <td>
+                                    <button class="btn btn-outline" style="padding: 0.25rem 0.5rem;"><i class="ph ph-pencil"></i></button>
+                                    <button class="btn btn-outline" style="padding: 0.25rem 0.5rem; color: var(--c-danger); border-color: var(--c-danger);"><i class="ph ph-trash"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Script de Guardado Dinámico para interfaz -->
+    <script>
+        // Sistema de notificaciones moderno (Toast)
+        function showToast(message, type = 'success') {
+            const toastContainer = document.getElementById('toast-container') || (function() {
+                const el = document.createElement('div');
+                el.id = 'toast-container';
+                el.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;';
+                document.body.appendChild(el);
+                return el;
+            })();
+
+            const toast = document.createElement('div');
+            const bgClass = type === 'success' ? '#10B981' : (type === 'error' ? '#EF4444' : '#3B82F6');
+            toast.style.cssText = `
+                background-color: ${bgClass};
+                color: white;
+                padding: 12px 24px;
+                border-radius: 8px;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                font-size: 14px;
+                font-weight: 500;
+                transform: translateX(120%);
+                transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            `;
+            
+            toast.innerHTML = type === 'success' ? '<i class="ph ph-check-circle" style="font-size: 18px;"></i> ' + message : 
+                              (type === 'error' ? '<i class="ph ph-warning-circle" style="font-size: 18px;"></i> ' + message : message);
+            
+            toastContainer.appendChild(toast);
+            
+            setTimeout(() => toast.style.transform = 'translateX(0)', 10);
+            
+            setTimeout(() => {
+                toast.style.transform = 'translateX(120%)';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const createExamForm = document.getElementById('createExamForm');
+            const tbody = document.querySelector('#examsTable tbody');
+            
+            // Si el arreglo no existe en LocalStorage, lo creamos y metemos la data mockeada de la tabla
+            let localExams = JSON.parse(localStorage.getItem('admin_exams') || '[]');
+            
+            if (localExams.length === 0) {
+                localExams.push({
+                    id: 'EX-001',
+                    title: 'Evaluación General Institucional',
+                    category: 'General',
+                    questions: 3,
+                    duration: 30,
+                    status: 'Activo'
+                });
+                localStorage.setItem('admin_exams', JSON.stringify(localExams));
+            }
+
+            function renderExams() {
+                tbody.innerHTML = '';
+                localExams = JSON.parse(localStorage.getItem('admin_exams') || '[]');
+                localExams.forEach((exam, index) => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>#${exam.id}</td>
+                            <td><strong>${exam.title}</strong></td>
+                            <td style="text-transform: capitalize;">${exam.category}</td>
+                            <td>${exam.questions} aleatorias</td>
+                            <td>${exam.duration} min</td>
+                            <td><span style="background:var(--c-success); color:white; padding: 2px 8px; border-radius: 12px; font-size: 12px;">${exam.status}</span></td>
+                            <td>
+                                <button class="btn btn-outline" style="padding: 0.25rem 0.5rem;"><i class="ph ph-pencil"></i></button>
+                                <button class="btn btn-outline" onclick="deleteExam(${index})" style="padding: 0.25rem 0.5rem; color: var(--c-danger); border-color: var(--c-danger);"><i class="ph ph-trash"></i></button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
+            
+            window.deleteExam = function(index) {
+                if(confirm('¿Seguro que deseas eliminar este examen?')) {
+                    localExams.splice(index, 1);
+                    localStorage.setItem('admin_exams', JSON.stringify(localExams));
+                    renderExams();
+                }
+            };
+
+            renderExams();
+
+            createExamForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const title = document.getElementById('examTitle').value;
+                const category = document.getElementById('examCategory').value;
+                const qCount = document.getElementById('totalQuestionsReq').value;
+                const duration = document.getElementById('examTimerReq').value;
+                
+                const newRow = {
+                    id: 'EX-' + String(localExams.length + 1).padStart(3, '0'),
+                    title: title,
+                    category: category,
+                    questions: qCount,
+                    duration: duration,
+                    status: 'Activo'
+                };
+                
+                localExams.push(newRow);
+                localStorage.setItem('admin_exams', JSON.stringify(localExams));
+                
+                createExamForm.reset();
+                renderExams();
+                showToast('Examen guardado y activado exitosamente.', 'success');
+            });
+        });
+    </script>
+</body>
+</html>

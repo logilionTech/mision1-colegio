@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estadísticas y Exportación | AI Exam Admin</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/admin.css">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <!-- Dependencias permitidas -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+</head>
+<body class="admin-layout">
+
+    <aside class="admin-sidebar">
+        <div class="admin-brand">
+            <i class="ph ph-shield-check text-success"></i>
+            <span>Admin PRO</span>
+        </div>
+        <nav class="admin-nav">
+            <a href="dashboard.html" class="admin-nav-item"><i class="ph ph-squares-four"></i> Dashboard</a>
+            <a href="exams.html" class="admin-nav-item"><i class="ph ph-exam"></i> Exámenes</a>
+            <a href="questionbank.html" class="admin-nav-item"><i class="ph ph-database"></i> Banco de Preguntas</a>
+            <a href="statistics.html" class="admin-nav-item active"><i class="ph ph-chart-bar"></i> Estadísticas & Exportar</a>
+        </nav>
+        <div class="admin-nav" style="margin-top: auto;">
+            <a href="../login.html" class="admin-nav-item"><i class="ph ph-sign-out"></i> Cerrar Sesión</a>
+        </div>
+    </aside>
+
+    <main class="admin-main">
+        <header class="admin-header">
+            <h2>Estadísticas de Exámenes</h2>
+            <div class="user-info">
+                <span>Administrador</span>
+                <i class="ph ph-user-circle" style="font-size: 1.5rem;"></i>
+            </div>
+        </header>
+
+        <div class="admin-content">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon bg-blue-100"><i class="ph ph-users"></i></div>
+                    <div class="stat-info">
+                        <h4>Estudiantes</h4>
+                        <span id="totalStudents">120</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon bg-green-100"><i class="ph ph-check-circle"></i></div>
+                    <div class="stat-info">
+                        <h4>Promedio Aprobación</h4>
+                        <span id="avgApproval">85%</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon bg-purple-100"><i class="ph ph-exam"></i></div>
+                    <div class="stat-info">
+                        <h4>Exámenes Creados</h4>
+                        <span id="totalExams">12</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h3>Desempeño General</h3>
+                    <!-- Botón Exportar Excel con SheetJS -->
+                    <button class="btn btn-success" id="btnExportExcel">
+                        <i class="ph ph-file-xls"></i> Exportar Resultados (Excel)
+                    </button>
+                </div>
+                
+                <!-- Chart.js Canvas -->
+                <div style="height: 300px; width: 100%;">
+                    <canvas id="performanceChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Tabla de Resultados para el Administrador -->
+            <div class="admin-card">
+                <h3>Últimos Cuadros de Calificaciones</h3>
+                <div class="admin-table-wrapper mt-4">
+                    <table class="admin-table" id="resultsTable">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Correo</th>
+                                <th>Examen</th>
+                                <th>Calificación</th>
+                                <th>Preguntas</th>
+                                <th>Intentos</th>
+                                <th>Fecha</th>
+                                <th>Hora</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Generado dinámicamente -->
+                        </tbody>
+                    </table>
+            </div>
+
+            <!-- Tabla de Nuevos Registrados -->
+            <div class="admin-card mt-4">
+                <h3>Historial de Estudiantes Registrados</h3>
+                <div class="admin-table-wrapper mt-4">
+                    <table class="admin-table" id="studentsTable">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Correo Electrónico</th>
+                                <th>Fecha de Registro</th>
+                                <th>Hora</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Generado dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script type="module" src="../js/statistics.js"></script>
+    <script type="module" src="../js/export.js"></script>
+</body>
+</html>
