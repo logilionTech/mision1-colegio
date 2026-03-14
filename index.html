@@ -38,8 +38,9 @@
     <header class="main-header" id="header">
         <div class="container header-container">
             <div class="logo">
-                <!-- Placeholder for Logo -->
-                <i class="ph ph-student"></i>
+                <div class="logo-icon-wrapper">
+                    <i class="ph-fill ph-student"></i>
+                </div>
                 <span>San Paulo</span>
             </div>
 
@@ -48,15 +49,15 @@
                     <li><a href="#home">Home</a></li>
                     <li><a href="#about">Nuestro Colegio</a></li>
                     <li><a href="#pedagogy">Pedagogía</a></li>
-                    <li><a href="#students">Alumnos</a></li>
-                    <li><a href="#pride">Orgullo San Paulino</a></li>
-                    <li><a href="#news">Eventos y Novedades</a></li>
+                    <li><a href="#pride">Orgullo</a></li>
+                    <li><a href="#news">Eventos</a></li>
                     <li><a href="#contact">Contáctanos</a></li>
+                    <li><a href="AI-Exam-System-PRO/login.html" class="nav-highlight"><i class="ph-bold ph-exam"></i> Aula Virtual</a></li>
                 </ul>
             </nav>
 
             <div class="header-actions">
-                <a href="#" class="btn btn-outline">Pagos</a>
+                <a href="AI-Exam-System-PRO/admin/login.html" class="btn btn-outline-nav"><i class="ph-bold ph-shield-check"></i> Portal Docente</a>
             </div>
 
             <button class="mobile-menu-toggle">
@@ -67,22 +68,43 @@
 
     <!-- Hero Section -->
     <section class="hero" id="home">
-        <div class="hero-bg"></div>
+        <div class="hero-bg">
+            <div class="hero-overlay"></div>
+        </div>
         <div class="container hero-container">
             <div class="hero-content animate-on-scroll fade-up">
-                <div class="hero-green-block">
-                    <h1>Educación integral, donde los valores cristianos y el conocimiento construyen tu futuro.</h1>
+                <div class="hero-badge glass-panel text-white">
+                    <i class="ph-fill ph-star text-green"></i> Excelencia Académica y Valores Cristianos
+                </div>
+                <h1 class="hero-title">Educación integral que construye el <span>futuro de tus hijos.</span></h1>
+                <p class="hero-subtitle">Institución modelo en Floridablanca, integrando pedagogía de innovación, amor, fe y excelencia académica.</p>
+                
+                <div class="hero-buttons">
+                    <a href="#contact" class="btn btn-premium">Inicia tu Admisión <i class="ph-bold ph-arrow-right"></i></a>
+                    <a href="#pedagogy" class="btn btn-glass"><i class="ph-bold ph-play-circle"></i> Descubre Nuestra Metodología</a>
                 </div>
             </div>
-            <div class="hero-location animate-on-scroll fade-left" style="transition-delay: 0.2s;">
-                <div class="location-card glass-panel">
-                    <i class="ph-fill ph-map-pin"></i>
-                    <div>
-                        <h3>Estamos ubicados en</h3>
-                        <p>Calle 200 #10-23<br>Floridablanca</p>
+            
+            <div class="hero-stats animate-on-scroll fade-left" style="transition-delay: 0.2s;">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="ph-fill ph-users-three"></i></div>
+                    <div class="stat-info">
+                        <h3>+20 Años</h3>
+                        <p>Formando líderes</p>
+                    </div>
+                </div>
+                <div class="stat-card mt-3">
+                    <div class="stat-icon bg-blue-light"><i class="ph-fill ph-medal text-blue"></i></div>
+                    <div class="stat-info">
+                        <h3>Educación</h3>
+                        <p>Nivel Bilingüe A+</p>
                     </div>
                 </div>
             </div>
+        </div>
+        
+        <div class="hero-scroll-indicator">
+            <span class="mouse-scroll"></span>
         </div>
     </section>
 
@@ -110,6 +132,17 @@
                         <p>Información y comunicados recientes</p>
                     </div>
                     <i class="ph ph-arrow-right quick-card-arrow"></i>
+                </a>
+
+                <a href="AI-Exam-System-PRO/login.html" class="quick-card animate-on-scroll fade-up" style="transition-delay: 0.2s; border: 2px solid var(--c-blue-primary);">
+                    <div class="quick-card-icon" style="background-color: var(--c-blue-primary); color: white;">
+                        <i class="ph ph-exam"></i>
+                    </div>
+                    <div class="quick-card-content">
+                        <h3 style="color: var(--c-blue-primary);">Plataforma de Exámenes</h3>
+                        <p>Ingresa a tus evaluaciones online preparadas por el colegio.</p>
+                    </div>
+                    <i class="ph ph-arrow-right quick-card-arrow" style="color: var(--c-blue-primary);"></i>
                 </a>
             </div>
         </div>
