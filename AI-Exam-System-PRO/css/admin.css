@@ -1,1 +1,142 @@
+/* css/admin.css - Estilos del Panel de Administración */
 
+.admin-layout {
+    display: flex;
+    min-height: 100vh;
+    background-color: var(--c-bg-light);
+}
+
+.admin-sidebar {
+    width: 250px;
+    background-color: #111827;
+    color: white;
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-brand {
+    padding: 1.5rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.admin-nav {
+    flex: 1;
+    padding: 1rem 0;
+}
+
+.admin-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.5rem;
+    color: #9CA3AF;
+    transition: all 0.2s;
+}
+
+.admin-nav-item:hover, .admin-nav-item.active {
+    background-color: rgba(255,255,255,0.05);
+    color: white;
+    border-left: 3px solid var(--c-primary);
+}
+
+.admin-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+}
+
+.admin-header {
+    background-color: white;
+    padding: 1rem 2rem;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.admin-content {
+    padding: 2rem;
+    flex: 1;
+    overflow-y: auto;
+}
+
+/* Tablas Admin */
+.admin-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.admin-table-wrapper {
+    overflow-x: auto;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.admin-table th, .admin-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--c-border);
+}
+
+.admin-table th {
+    background-color: #F9FAFB;
+    font-weight: 600;
+    color: var(--c-text-muted);
+}
+
+/* Grillas */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.bg-blue-100 { background-color: #DBEAFE; color: #1E40AF; }
+.bg-green-100 { background-color: #D1FAE5; color: #065F46; }
+.bg-red-100 { background-color: #FEE2E2; color: #991B1B; }
+.bg-purple-100 { background-color: #EDE9FE; color: #5B21B6; }
+
+.stat-info h4 {
+    font-size: 0.875rem;
+    color: var(--c-text-muted);
+    font-weight: 500;
+}
+
+.stat-info span {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--c-text-main);
+}
