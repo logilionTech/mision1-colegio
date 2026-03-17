@@ -3,6 +3,16 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+
+    // ===============================================
+    // 0. MOSTRAR NOMBRE DEL ESTUDIANTE
+    // ===============================================
+    const displayUserName = document.getElementById('displayUserName');
+    if (displayUserName) {
+        const studentName = localStorage.getItem('current_student_name') || 'Invitado';
+        displayUserName.textContent = `${studentName} (Estudiante)`;
+    }
+
     // ===============================================
     // 1. SISTEMA ANTI-FRAUDE (Bloqueo de atajos)
     // ===============================================
