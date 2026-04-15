@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Tecnical SEO & AEO Optimization -->
+    <title>Reconocimiento IA de Números para Niños | App Educativa</title>
+    <meta name="description" content="Aplicación web educativa que usa inteligencia artificial y tu cámara web para enseñar los números del 1 al 5 en inglés y español.">
+    <meta name="keywords" content="educación, niños, números, inteligencia artificial, teachable machine, inglés, español, canciones infantiles">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="Reconocimiento de Números con IA para Niños">
+    <meta property="og:description" content="App interactiva que detecta gestos con la mano para enseñar números, idiomas y cantar canciones.">
+    
+    <!-- Schema Markup para Motores de IA (AEO) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Reconocimiento de Números Interpretativos con IA",
+      "applicationCategory": "EducationalApplication",
+      "description": "Una aplicación web interactiva que utiliza TensorFlow.js y Teachable Machine para reconocer gestos con las manos y enseñar números a los niños.",
+      "browserRequirements": "Requiere acceso a webcam y soporte de Web Audio API.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0"
+      }
+    }
+    </script>
+
+    <!-- Librerías de Machine Learning (CDN) -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+    
+    <!-- Supabase JS CDN para Autenticación -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        /* Estilos Base y Variables de Color Alegres */
+        :root {
+            --primary: #FF6B6B;
+            --secondary: #4ECDC4;
+            --accent: #FFE66D;
+            --text-dark: #2F3542;
+            --bg-color: #F7F1E3;
+            --success: #2ED573;
+            --error: #FF4757;
+            --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-main);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* --- CONTENEDORES DE VISTA --- */
+        .view {
+            display: none;
+            width: 100%;
+            max-width: 1200px;
+            padding: 20px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .view.active {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- LOGIN & AUTH --- */
+        .auth-card {
+            background: #fff;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .auth-card h1 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 2.2rem;
+        }
+
+        .auth-card p {
+            margin-bottom: 25px;
+            color: #747d8c;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #dfe4ea;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--secondary);
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 42px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: #a4b0be;
+            user-select: none;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            transition: background 0.3s, transform 0.1s;
+        }
+
+        .btn:hover { background: #ff4757; }
+        .btn:active { transform: scale(0.98); }
+
+        .btn-secondary { background: var(--secondary); margin-top: 10px; }
+        .btn-secondary:hover { background: #1e90ff; }
+
+        .auth-switch {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #747d8c;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .error-msg {
+            color: var(--error);
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            display: none;
+        }
+
+        /* --- APP PRINCIPAL --- */
+        .app-header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+
+        .app-header h2 {
+            color: var(--secondary);
+            font-size: 1.8rem;
+        }
+
+        .btn-logout {
+            background: #f1f2f6;
+            color: var(--text-dark);
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .btn-logout:hover { background: #dfe4ea; }
+
+        .app-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        /* -- SECCIÓN WEBCAM -- */
+        .camera-section {
+            background: white;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        #webcam-container {
+            width: 300px;
+            height: 300px;
+            border-radius: 15px;
+            overflow: hidden;
+            background: #2f3542;
+            position: relative;
+        }
+
+        #webcam-container canvas {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1); /* Espejo */
+        }
+
+        .waiting-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 15px;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            z-index: 10;
+        }
+
+        .confidence-bar-container {
+            width: 100%;
+            height: 15px;
+            background: #dfe4ea;
+            border-radius: 10px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        #confidence-bar {
+            height: 100%;
+            width: 0%;
+            background: var(--success);
+            transition: width 0.2s, background-color 0.2s;
+        }
+
+        .confidence-text {
+            margin-top: 5px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #747d8c;
+        }
+
+        /* -- SECCIÓN RESULTADOS -- */
+        .result-section {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            flex: 1;
+            min-width: 300px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .number-display {
+            font-size: 8rem;
+            font-weight: 900;
+            color: var(--primary);
+            line-height: 1;
+            margin-bottom: 20px;
+            text-shadow: 4px 4px 0px var(--accent);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .words-display {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .word-badge {
+            background: #f1f2f6;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-transform: capitalize;
+        }
+
+        .word-en { color: var(--secondary); border: 2px solid var(--secondary); background: rgba(78, 205, 196, 0.1); }
+        .word-es { color: var(--primary); border: 2px solid var(--primary); background: rgba(255, 107, 107, 0.1); }
+
+        .song-lyrics {
+            font-size: 1.3rem;
+            color: #57606f;
+            font-style: italic;
+            margin-bottom: 30px;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+        }
+
+        .controls { display: flex; gap: 15px; }
+
+        @media (max-width: 768px) {
+            .app-content { flex-direction: column; }
+            .number-display { font-size: 6rem; }
+            .words-display { flex-direction: column; gap: 10px; }
+            .controls { flex-direction: column; width: 100%; }
+        }
+
+        /* Loading spinner para cuando carga TFJS */
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--secondary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+            display: none;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+    </style>
+</head>
+<body>
+
+    <!-- ============================================= 
+         VISTA DE LOGIN Y REGISTRO
+    ============================================== -->
+    <main id="auth-view" class="view active">
+        <div class="auth-card">
+            <h1 id="auth-title">Iniciar Sesión</h1>
+            <p>¡Aprende los números jugando!</p>
+            <div id="auth-error" class="error-msg"></div>
+            
+            <form id="auth-form" onsubmit="handleAuth(event)">
+                <div class="form-group">
+                    <label for="email">Correo / Usuario</label>
+                    <input type="text" id="email" required placeholder="tu@email.com">
+                </div>
+                <div class="form-group">
+                    <label for="pwd">Contraseña</label>
+                    <input type="password" id="pwd" required placeholder="********">
+                    <span class="toggle-password" onclick="togglePassword()" title="Mostrar contraseña">👁️</span>
+                </div>
+                <button type="submit" class="btn" id="btn-submit">Ingresar</button>
+            </form>
+            
+            <div class="auth-switch" onclick="switchAuthMode()">
+                ¿No tienes cuenta? Regístrate aquí
+            </div>
+            
+            <!-- Metadata AEO Estructural (Oculto) -->
+            <section style="display: none;">
+                <h2>¿Cómo registrarse o iniciar sesión?</h2>
+                <p>Ingresa tus credenciales en el formulario. Los datos se almacenan en el navegador de manera segura localmente.</p>
+            </section>
+        </div>
+    </main>
+
+    <!-- ============================================= 
+         VISTA PRINCIPAL DE LA APLICACIÓN
+    ============================================== -->
+    <main id="app-view" class="view">
+        <header class="app-header">
+            <h2>🖐️ Magic Numbers</h2>
+            <button class="btn-logout" onclick="logout()">Cerrar Sesión</button>
+        </header>
+
+        <div class="app-content">
+            
+            <!-- Panel Izquierdo: Cámara e IA -->
+            <section class="camera-section" aria-label="Cámara y Reconocimiento de Gestos">
+                <div id="camera-loading" class="loader"></div>
+                <div id="webcam-container">
+                    <div id="waiting-overlay" class="waiting-overlay">Cargando IA...</div>
+                </div>
+                <div class="confidence-bar-container" title="Confianza de la predicción algorítmica">
+                    <div id="confidence-bar"></div>
+                </div>
+                <div id="confidence-text" class="confidence-text">Confianza: 0%</div>
+            </section>
+
+            <!-- Panel Derecho: Resultados Visuales y Auditivos -->
+            <section class="result-section" aria-label="Resultados de Aprendizaje">
+                <div id="number-display" class="number-display">?</div>
+                
+                <div class="words-display">
+                    <div id="word-en" class="word-badge word-en">English</div>
+                    <div id="word-es" class="word-badge word-es">Español</div>
+                </div>
+
+                <div id="song-lyrics" class="song-lyrics" aria-live="polite">
+                    Muestra un número de dedos a la cámara para comenzar
+                </div>
+
+                <div class="controls">
+                    <button class="btn btn-secondary" onclick="manualRepeatVoice()">🔊 Repetir Voz</button>
+                    <button class="btn btn-secondary" onclick="manualRepeatSong()">🎵 Repetir Canción</button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        // =======================================================
+        // 1. LÓGICA DE AUTENTICACIÓN (LOCAL STORAGE)
+        // =======================================================
+
+        let isLoginMode = true;
+
+        // Comprobación de estado persistente
+        window.onload = () => {
+            const loggedInUser = localStorage.getItem('kids_app_logged_in');
+            if (loggedInUser) {
+                showApp();
+            }
+        };
+
+        function switchAuthMode() {
+            isLoginMode = !isLoginMode;
+            document.getElementById('auth-title').innerText = isLoginMode ? 'Iniciar Sesión' : 'Registrarse';
+            document.getElementById('btn-submit').innerText = isLoginMode ? 'Ingresar' : 'Crear Cuenta';
+            document.querySelector('.auth-switch').innerText = isLoginMode ? '¿No tienes cuenta? Regístrate aquí' : '¿Ya tienes cuenta? Inicia sesión';
+            document.getElementById('auth-error').style.display = 'none';
+        }
+
+        function togglePassword() {
+            const pwdInput = document.getElementById('pwd');
+            pwdInput.type = pwdInput.type === 'password' ? 'text' : 'password';
+        }
+
+        function handleAuth(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value.trim();
+            const pwd = document.getElementById('pwd').value;
+            const btn = document.getElementById('btn-submit');
+            
+            btn.disabled = true;
+            btn.innerText = 'Procesando...';
+            document.getElementById('auth-error').style.display = 'none';
+
+            let users = {};
+            try {
+                users = JSON.parse(localStorage.getItem('kids_app_users') || '{}');
+            } catch (err) {
+                users = {};
+            }
+
+            setTimeout(() => {
+                if (!isLoginMode) {
+                    // Flujo Registro
+                    if (users[email]) {
+                        showError("Error: El correo/usuario ya está registrado.");
+                    } else {
+                        users[email] = { password: pwd };
+                        localStorage.setItem('kids_app_users', JSON.stringify(users));
+                        alert("Cuenta creada con éxito.");
+                        loginUser(email);
+                    }
+                } else {
+                    // Flujo Login
+                    if (users[email] && users[email].password === pwd) {
+                        loginUser(email);
+                    } else {
+                        showError("Error: Credenciales inválidas. Verifica tu correo y contraseña.");
+                    }
+                }
+                
+                btn.disabled = false;
+                btn.innerText = isLoginMode ? 'Ingresar' : 'Crear Cuenta';
+            }, 400); // Pequeño retraso para dar sensación de procesamiento
+        }
+
+        function showError(msg) {
+            const errorDiv = document.getElementById('auth-error');
+            errorDiv.innerText = msg;
+            errorDiv.style.display = 'block';
+        }
+
+        function loginUser(email) {
+            localStorage.setItem('kids_app_logged_in', email);
+            document.getElementById('auth-form').reset();
+            // Reanudar el contexto de audio tras la interacción estricta del usuario
+            initAudio(); 
+            showApp();
+        }
+
+        function logout() {
+            localStorage.removeItem('kids_app_logged_in');
+            stopApp();
+            document.getElementById('app-view').classList.remove('active');
+            document.getElementById('auth-view').classList.add('active');
+        }
+
+        function showApp() {
+            document.getElementById('auth-view').classList.remove('active');
+            document.getElementById('app-view').classList.add('active');
+            initTMApp();
+        }
+
+        // =======================================================
+        // 2. SISTEMA DE AUDIO EXPERIENCIA INFANTIL
+        // =======================================================
+        let audioCtx;
+        let currentMelodyTimer = null;
+
+        // Base de datos de información por número
+        const NUMBER_DATA = {
+            1: { en: "One", es: "Uno", lyrics: "♪ One little finger, one little finger... ♫", melody: [261.63, 261.63, 392.00, 392.00] }, // Do Do Sol Sol
+            2: { en: "Two", es: "Dos", lyrics: "♪ Two little hands go clap clap clap... ♫", melody: [329.63, 293.66, 261.63, 329.63] }, // Mi Re Do Mi
+            3: { en: "Three", es: "Tres", lyrics: "♪ Three little kittens lost their mittens... ♫", melody: [392.00, 329.63, 392.00, 329.63] }, // Sol Mi Sol Mi
+            4: { en: "Four", es: "Cuatro", lyrics: "♪ Four little ducks went swimming one day... ♫", melody: [392.00, 392.00, 392.00, 329.63] }, // Sol Sol Sol Mi
+            5: { en: "Five", es: "Cinco", lyrics: "♪ Five little monkeys jumping on the bed... ♫", melody: [329.63, 329.63, 329.63, 261.63] } // Mi Mi Mi Do
+        };
+
+        function initAudio() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContext();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function speakWord(word, lang='en-US') {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(word);
+            utterance.lang = lang;
+            utterance.rate = 0.85; // Un poco más lento para los niños
+            utterance.pitch = 1.2; // Tono ligeramente más agudo
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function stopMelody() {
+            if (currentMelodyTimer) clearTimeout(currentMelodyTimer);
+        }
+
+        // Sintetizador básico (Web Audio API)
+        function playMelodyNotes(freqArr, index=0) {
+            if (!audioCtx || index >= freqArr.length) return;
+            
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            
+            osc.type = 'sine'; // Sonido suave "timbre"
+            osc.frequency.value = freqArr[index];
+            
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            // ADSR Envolvente para evitar clics de audio
+            gain.gain.setValueAtTime(0, audioCtx.currentTime);
+            gain.gain.linearRampToValueAtTime(0.1, audioCtx.currentTime + 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+            
+            osc.start(audioCtx.currentTime);
+            osc.stop(audioCtx.currentTime + 0.4);
+            
+            // Programar la siguiente nota
+            currentMelodyTimer = setTimeout(() => {
+                playMelodyNotes(freqArr, index + 1);
+            }, 450); 
+        }
+
+        // =======================================================
+        // 3. IA & LÓGICA DE RECONOCIMIENTO (TEACHABLE MACHINE)
+        // =======================================================
+        const URL_MODEL = "https://teachablemachine.withgoogle.com/models/GwjWdNfk6/";
+        let model, webcam, maxPredictions, animationId;
+        let isAppRunning = false;
+        
+        let currentNumber = null;
+        let lastTriggerTime = 0;
+        const DEBOUNCE_MS = 2500; // Bloquea regeneración repetida en la cámara por 2.5s
+
+        async function initTMApp() {
+            if (isAppRunning) return;
+            isAppRunning = true;
+            
+            document.getElementById('camera-loading').style.display = 'block';
+            document.getElementById('waiting-overlay').innerText = 'Cargando Modelo IA...';
+            document.getElementById('waiting-overlay').style.opacity = '1';
+
+            try {
+                const modelURL = URL_MODEL + "model.json";
+                const metadataURL = URL_MODEL + "metadata.json";
+
+                // Cargar modelo y metadatos
+                model = await tmImage.load(modelURL, metadataURL);
+                maxPredictions = model.getTotalClasses();
+
+                // Setup Cámara Web
+                const size = 300;
+                const flip = true; // Espejo activado
+                webcam = new tmImage.Webcam(size, size, flip);
+                
+                await webcam.setup({ facingMode: "user" }); // Pide permisos
+                await webcam.play();
+                
+                animationId = window.requestAnimationFrame(cameraLoop);
+
+                // Insertar cámara visualmente
+                const cvsContainer = document.getElementById("webcam-container");
+                // Quitar canvas anteriores pero mantener el overlay
+                const existingCanvas = cvsContainer.querySelector('canvas');
+                if (existingCanvas) existingCanvas.remove();
+                
+                cvsContainer.insertBefore(webcam.canvas, cvsContainer.firstChild);
+
+                document.getElementById('camera-loading').style.display = 'none';
+
+            } catch (error) {
+                console.error("Error inicializando modelo IA: ", error);
+                document.getElementById('waiting-overlay').innerText = 'Permiso denegado / Error de cámara';
+                document.getElementById('camera-loading').style.display = 'none';
+            }
+        }
+
+        // Rutina de Limpieza Total 
+        function stopApp() {
+            isAppRunning = false;
+            if (animationId) window.cancelAnimationFrame(animationId);
+            if (webcam && webcam.canvas) {
+                webcam.stop();
+            }
+            stopMelody();
+            window.speechSynthesis.cancel();
+            
+            // Resetear interfaz principal
+            currentNumber = null;
+            document.getElementById('number-display').innerText = '?';
+            document.getElementById('word-en').innerText = 'English';
+            document.getElementById('word-es').innerText = 'Español';
+            document.getElementById('song-lyrics').innerText = 'Muestra un número con tus dedos a la cámara';
+            
+            document.getElementById('confidence-bar').style.width = '0%';
+            document.getElementById('confidence-text').innerText = 'Confianza: 0%';
+            
+            const overlay = document.getElementById('waiting-overlay');
+            overlay.innerText = 'Cámara detenida';
+            overlay.style.opacity = '1';
+        }
+
+        async function cameraLoop() {
+            if (!isAppRunning) return;
+            webcam.update(); 
+            await processPrediction();
+            animationId = window.requestAnimationFrame(cameraLoop);
+        }
+
+        // Parser resiliente diseñado para flexibilizar la lectura de clases de TM
+        function extractNumberClass(className) {
+            const str = className.toLowerCase();
+            const mapping = {
+                "1": 1, "one": 1, "uno": 1,
+                "2": 2, "two": 2, "dos": 2,
+                "3": 3, "three": 3, "tres": 3,
+                "4": 4, "four": 4, "cuatro": 4,
+                "5": 5, "five": 5, "cinco": 5
+            };
+            for (let key in mapping) {
+                if (str.includes(key)) return mapping[key];
+            }
+            return null;
+        }
+
+        async function processPrediction() {
+            const predictions = await model.predict(webcam.canvas);
+            
+            // Buscar la clase con mayor probabilidad
+            let bestPred = predictions[0];
+            for (let i = 1; i < maxPredictions; i++) {
+                if (predictions[i].probability > bestPred.probability) {
+                    bestPred = predictions[i];
+                }
+            }
+
+            const confidence = bestPred.probability;
+            const bar = document.getElementById('confidence-bar');
+            const txt = document.getElementById('confidence-text');
+            const overlay = document.getElementById('waiting-overlay');
+            
+            // Actualizar indicación visual en tiempo real
+            bar.style.width = `${confidence * 100}%`;
+            txt.innerText = `Confianza: ${Math.round(confidence * 100)}%`;
+            
+            if (confidence > 0.70) {
+                bar.style.backgroundColor = 'var(--success)';
+                overlay.style.opacity = '0'; // Remover máscara de espera
+                
+                const detectedNum = extractNumberClass(bestPred.className);
+                
+                if (detectedNum && detectedNum >= 1 && detectedNum <= 5) {
+                    evaluateStateChange(detectedNum);
+                }
+            } else {
+                bar.style.backgroundColor = 'var(--error)';
+                overlay.innerText = 'Esperando gesto claro...';
+                overlay.style.opacity = '1';
+            }
+        }
+
+        function evaluateStateChange(num) {
+            const now = Date.now();
+            // Lógica Debounce: Solo actualiza si es un número nuevo y ha pasado el periodo de enfriamiento
+            if (num !== currentNumber && (now - lastTriggerTime > DEBOUNCE_MS)) {
+                currentNumber = num;
+                lastTriggerTime = now;
+                applyUIUpdates(num);
+                fireAudiovisualEvents(num);
+            }
+        }
+
+        function applyUIUpdates(num) {
+            const data = NUMBER_DATA[num];
+            if(!data) return;
+
+            const display = document.getElementById('number-display');
+            display.innerText = num;
+            
+            // Micro-interacción: Pop bounce
+            display.style.transform = 'scale(1.3)';
+            setTimeout(() => display.style.transform = 'scale(1)', 300);
+
+            document.getElementById('word-en').innerText = data.en;
+            document.getElementById('word-es').innerText = data.es;
+            document.getElementById('song-lyrics').innerText = data.lyrics;
+        }
+
+        function fireAudiovisualEvents(num) {
+            const data = NUMBER_DATA[num];
+            stopMelody(); // Interrumpir si existía melodía previa
+            
+            // 1. Sintetizador de Voz (Inglés)
+            speakWord(data.en);
+            
+            // 2. Ejecutar coreografía musical ligera (con delay para no pisar la voz)
+            setTimeout(() => {
+                if (currentNumber === num && isAppRunning) {
+                    playMelodyNotes(data.melody);
+                }
+            }, 1000);
+        }
+
+        // =======================================================
+        // 4. CONTROLES MANUALES
+        // =======================================================
+        function manualRepeatVoice() {
+            initAudio(); // Reactivar si fue suspendido
+            if (currentNumber && NUMBER_DATA[currentNumber]) {
+                speakWord(NUMBER_DATA[currentNumber].en);
+            }
+        }
+
+        function manualRepeatSong() {
+            initAudio();
+            if (currentNumber && NUMBER_DATA[currentNumber]) {
+                stopMelody();
+                window.speechSynthesis.cancel();
+                playMelodyNotes(NUMBER_DATA[currentNumber].melody);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -52,12 +52,17 @@
                     <li><a href="#pride">Orgullo</a></li>
                     <li><a href="#news">Eventos</a></li>
                     <li><a href="#contact">Contáctanos</a></li>
-                    <li><a href="AI-Exam-System-PRO/login.html" class="nav-highlight"><i class="ph-bold ph-exam"></i> Aula Virtual</a></li>
+                    <li><a href="AI-Exam-System-PRO/login.html" class="nav-highlight"><i class="ph-bold ph-exam"></i>
+                            Aula Virtual</a></li>
+                    <li><a href="kids_numbers_app.html" class="nav-highlight"
+                            style="color: #FF6B6B; border-color: #FF6B6B;"><i class="ph-bold ph-user-circle"></i> Login
+                            App Manos</a></li>
                 </ul>
             </nav>
 
             <div class="header-actions">
-                <a href="AI-Exam-System-PRO/admin/login.html" class="btn btn-outline-nav"><i class="ph-bold ph-shield-check"></i> Portal Docente</a>
+                <a href="AI-Exam-System-PRO/admin/login.html" class="btn btn-outline-nav"><i
+                        class="ph-bold ph-shield-check"></i> Portal Docente</a>
             </div>
 
             <button class="mobile-menu-toggle">
@@ -77,14 +82,17 @@
                     <i class="ph-fill ph-star text-green"></i> Excelencia Académica y Valores Cristianos
                 </div>
                 <h1 class="hero-title">Educación integral que construye el <span>futuro de tus hijos.</span></h1>
-                <p class="hero-subtitle">Institución modelo en Floridablanca, integrando pedagogía de innovación, amor, fe y excelencia académica.</p>
-                
+                <p class="hero-subtitle">Institución modelo en Floridablanca, integrando pedagogía de innovación, amor,
+                    fe y excelencia académica.</p>
+
                 <div class="hero-buttons">
-                    <a href="#contact" class="btn btn-premium">Inicia tu Admisión <i class="ph-bold ph-arrow-right"></i></a>
-                    <a href="#pedagogy" class="btn btn-glass"><i class="ph-bold ph-play-circle"></i> Descubre Nuestra Metodología</a>
+                    <a href="#contact" class="btn btn-premium">Inicia tu Admisión <i
+                            class="ph-bold ph-arrow-right"></i></a>
+                    <a href="#pedagogy" class="btn btn-glass"><i class="ph-bold ph-play-circle"></i> Descubre Nuestra
+                        Metodología</a>
                 </div>
             </div>
-            
+
             <div class="hero-stats animate-on-scroll fade-left" style="transition-delay: 0.2s;">
                 <div class="stat-card">
                     <div class="stat-icon"><i class="ph-fill ph-users-three"></i></div>
@@ -102,7 +110,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="hero-scroll-indicator">
             <span class="mouse-scroll"></span>
         </div>
@@ -134,7 +142,8 @@
                     <i class="ph ph-arrow-right quick-card-arrow"></i>
                 </a>
 
-                <a href="AI-Exam-System-PRO/login.html" class="quick-card animate-on-scroll fade-up" style="transition-delay: 0.2s; border: 2px solid var(--c-blue-primary);">
+                <a href="AI-Exam-System-PRO/login.html" class="quick-card animate-on-scroll fade-up"
+                    style="transition-delay: 0.2s; border: 2px solid var(--c-blue-primary);">
                     <div class="quick-card-icon" style="background-color: var(--c-blue-primary); color: white;">
                         <i class="ph ph-exam"></i>
                     </div>
@@ -143,6 +152,19 @@
                         <p>Ingresa a tus evaluaciones online preparadas por el colegio.</p>
                     </div>
                     <i class="ph ph-arrow-right quick-card-arrow" style="color: var(--c-blue-primary);"></i>
+                </a>
+
+                <!-- Enlace al aplicativo de Teachable Machine -->
+                <a href="kids_numbers_app.html" class="quick-card animate-on-scroll fade-up"
+                    style="transition-delay: 0.3s; border: 2px solid #FF6B6B;">
+                    <div class="quick-card-icon" style="background-color: #FF6B6B; color: white;">
+                        <i class="ph ph-hand-palm"></i>
+                    </div>
+                    <div class="quick-card-content">
+                        <h3 style="color: #FF6B6B;">App Inteligencia Artificial</h3>
+                        <p>¡Aprende los números con tus manos! (Login y Registro).</p>
+                    </div>
+                    <i class="ph ph-arrow-right quick-card-arrow" style="color: #FF6B6B;"></i>
                 </a>
             </div>
         </div>
@@ -423,6 +445,21 @@
             </div>
         </div>
     </footer>
+
+    <!-- VAPI Widget -->
+    <vapi-widget public-key="0872af82-8495-4c0d-a5c4-dc62ab04cf98" assistant-id="114b9774-620b-483b-8ada-6d5200e48e25"
+        mode="voice" theme="dark" base-bg-color="#000000" accent-color="#14B8A6" cta-button-color="#000000"
+        cta-button-text-color="#ffffff" border-radius="large" size="full" position="bottom-left" title="TALK WITH AI"
+        start-button-text="Start" end-button-text="End Call" chat-first-message="Hey, How can I help you today?"
+        chat-placeholder="Type your message..." voice-show-transcript="true" consent-required="true"
+        consent-title="Terms and conditions"
+        consent-content="By clicking &quot;Agree,&quot; and each time I interact with this AI agent, I consent to the recording, storage, and sharing of my communications with third-party service providers, and as otherwise described in our Terms of Service."
+        consent-storage-key="vapi_widget_consent">
+    </vapi-widget>
+
+    <!-- VAPI Script -->
+    <script src="https://unpkg.com/@vapi-ai/client-sdk-react/dist/embed/widget.umd.js" async type="text/javascript">
+    </script>
 
     <!-- Chatbase Script -->
     <script>
